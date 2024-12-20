@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+ <html>
+    <head>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0"
+        
+        <title>WeatherApp</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <div class="card">
+          <div class= "search">
+             <input type="text" placeholder="Enter city name" spellcheck="false">
+             <button><img src="Images\search.png"></button>
+          </div>
+          <div class="error">
+             <p>Invalid city name</p>
+          </div>
+          <div class="weather">
+            <img src="Images\rain.png" class="weather-icon">
+            <h1 class="temp">31°C</h1>
+            <h2 class="city">Chennai</h2>
+            <div class="details">
+                <div clas="col">
+                    <img src="Images\humidity.png">
+                    <div>
+                        <p class="humidity">90%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div clas="col">
+                    <img src="Images\wind.png">
+                    <div>
+                        <p class="wind">14km/hr</p>
+                        <p>WindSpeed</p>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        <script>
+        
+            // api keys- authorize the users to access the data.
+            const apiKey ="f6c2ec8156c8bb10f6eacfbf75449798";
+
+            // Define the API URL 
+            const apiUrl = "http://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+            const searchBox = document.querySelector(".search input");
+            const searchBtn = document.querySelector(".search button");
+            const weatherIcon = document.querySelector(".weather-icon");
+
+             // We use fetch API - to make API request in java script
+             //fetch send HTTP Request and handle responses asynchronously
+              async function checkWeather(city) { // city passed as parameter
+                     const response = await fetch(apiUrl + city +`&appid=${apiKey}`);
+                    /* await  keyword in js,Used inside the async function
+                    2. wait for the asynchronous operation  */
+                if(response.status == 404) { // If the given i/p city is invalid
+                    document.querySelector(".error").style.display="block";
+                    document.querySelector(".weather").style.display="none";
+                }else{
+
+                
+                var data = await response.json();
+                
+                     
+                  // To display the temperature,humidity,wind speed
+                document.querySelector(".city").innerHTML= data.name;
+                document.querySelector(".temp").innerHTML= Math.round(data.main.temp) + "°C"; // Math.round is used to round off the temperature
+                document.querySelector(".humidity").innerHTML= data.main.humidity +"%";
+                document.querySelector(".wind").innerHTML= data.wind.speed + "km/hr";
+
+                if(data.weather[0].main == "Clouds"){
+                    weatherIcon.src="Images/clouds.png";
+                }
+
+                else if(data.weather[0].main == "Clear"){
+                    weatherIcon.src="Images/clear.png";
+                }
+
+                else if(data.weather[0].main == "Rain"){
+                    weatherIcon.src="Images/rain.png";
+                }
+
+                else if(data.weather[0].main == "Drizzle"){
+                    weatherIcon.src="Images/drizzle.png";
+                }
+
+                else if(data.weather[0].main == "Mist"){
+                    weatherIcon.src="Images/mist.png";
+                }
+
+             document.querySelector(".weather").style.display="block";    
+             document.querySelector(".error").style.dispaly="none";
+               }
+                
+            }
+
+            searchBtn.addEventListener("click", ()=>{
+                checkWeather(searchBox.value); // Invoke or calling the checkWeather function
+ 
+            })
+
+            
+        </script>
+
+    </body>
+ </html>
